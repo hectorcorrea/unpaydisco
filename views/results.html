@@ -1,0 +1,97 @@
+{{ define "content" }}
+<style>
+  em {
+    background: #e9e91966;
+  }
+</style>
+<div class="row">
+  <div class="col-md-4">
+    <form action="/search" method="GET">
+      <input type="text" id="q" name="q" value="{{ .Q }}" placeholder="enter text" autofocus/>
+      <div style="display:none;" id="facets_form">
+        <!-- reset paging when submitting a new search -->
+        <input type="text" id="start" name="start" value="0" />
+        <input type="text" id="rows" name="rows" value="10" />
+        <!-- preserve the facets when submitting a new search -->
+        {{ range $facet := .Facets }}
+          {{ range .Values }}
+            {{ if .Active }}
+              <input type="text" id="fq" name="fq" value="{{ $facet.Field }}|{{ .Text }}" />
+            {{ end }}
+          {{ end }}
+        {{ end }}
+      </div>
+      <button type="submit">Search</button>
+    </form>
+  </div>
+  <div class="col-md-8">
+    {{ if ne .Q "" }}
+      <p>Searched for:<b> {{ .Q }}</b><a href="{{ safeURL .UrlNoQ }}"> (remove)</a></p>
+    {{ end }}
+    {{ range $facet := .Facets }}
+      {{ range .Values }}
+        {{ if .Active }}
+          <p>{{ $facet.Title }} > {{ .Text }} <a href="{{ safeURL .RemoveUrl }}">(remove)</a></p>
+        {{ end }}
+      {{ end }}
+    {{ end }}
+    <p>Found: {{ .NumFound }}, showing {{ .First }} - {{ .Last }}</p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    <!-- facets -->
+    {{ range $facet := .Facets }}
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <h3 class="panel-title">{{ .Title }}</h3>
+        </div>
+        <div class="panel-body">
+          {{ range .Values }}
+            <p>
+            {{ if .Active }}
+                <span class="badge" style="float: right;">{{ .Count }}</span>
+                {{ .Text }} <a href="{{ safeURL .RemoveUrl }}">(remove)</a>
+            {{ else }}
+                <span class="badge" style="float: right;">{{ .Count }}</span>
+                <a href="{{ safeURL .AddUrl }}">{{ .Text }}</a>
+            {{ end }}
+            </p>
+          {{ end }}
+        </div>
+      </div>
+    {{ end }}
+  </div>
+
+  <div class="col-md-8">
+    <!-- TODO disable prev/next based on current page and num found -->
+    <div class="btn-group" role="group" aria-label="...">
+      <a class="btn btn-default" href="{{ .PrevPageUrl }}" title="View previous {{ .Rows }}">Previous</a>
+      <a class="btn btn-default" href="{{ .NextPageUrl }}" title="View next {{ .Rows }}">Next</a>
+    </div>
+    <div>&nbsp;</div>
+
+    <!-- search results -->
+    <div class="list-group">
+      {{ range .Documents }}
+        <div class="list-group-item">
+          {{ $doc := . }}
+          <p><a href="/view/{{ .Id }}">{{ .Id }}</a></p>
+          {{ range $name, $values := .Data }}
+            {{ if ne $name "id" }}
+              {{ if $doc.IsHighlighted $name }}
+                <p><b>{{ $name }}:</b> {{ $doc.HighlightFor $name | safeHTML }}</p>
+              {{ else }}
+                <p><b>{{ $name }}:</b> {{ $values }}</p>
+              {{ end }}
+            {{ end }}
+          {{ end }}
+        </div>
+      {{ end }}
+    </div>
+
+  </div>
+</div>
+
+{{ end }}

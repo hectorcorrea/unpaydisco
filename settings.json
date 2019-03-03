@@ -1,0 +1,19 @@
+{
+  "serverAddress": "localhost:9001",
+  "solrCoreUrl": "http://localhost:8983/solr/unpaydisco",
+  "solrOptions" : {
+    "defType": "edismax",
+    "qf": "id title_txt_en",
+    "op": "AND",
+    "wt": "json",
+    "facet.limit": "20",
+    "facet.mincount": "1",
+    "hl": "on"
+  },
+  "solrFacets": {
+    "journal_s": "Journal",
+    "year_i": "Year"
+  },
+  "searchFl": ["id", "title_txt_en", "oa_url_s"],
+  "viewOneFl": []
+}
