@@ -8,6 +8,7 @@ import (
 	"solr"
 )
 
+// Importer is used to handle imports of Unpaywall documents to Solr.
 type Importer struct {
 	fileName  string
 	batchSize int
@@ -15,6 +16,7 @@ type Importer struct {
 	s         solr.Solr
 }
 
+// NewImporter creates a new importer with the required parameters
 func NewImporter(solrCoreURL string, fileName string, batchSize int) Importer {
 	importer := Importer{
 		fileName:  fileName,
@@ -24,6 +26,7 @@ func NewImporter(solrCoreURL string, fileName string, batchSize int) Importer {
 	return importer
 }
 
+// Import is the core method that performs the import
 func (imp Importer) Import() error {
 	file, err := os.Open(imp.fileName)
 	defer file.Close()

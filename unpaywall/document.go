@@ -2,6 +2,7 @@ package unpaywall
 
 import "fmt"
 
+// OaLocation represents the URL of the Open Access Location
 type OaLocation struct {
 	URL string `json:"url"`
 }
