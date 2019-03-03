@@ -31,42 +31,47 @@ func (imp Importer) Import() error {
 		return err
 	}
 
-	docs := []Document{}
 	reader := bufio.NewReader(file)
 	for {
-		var line string
-		line, err = reader.ReadString('\n')
+		var docs []Document
+		docs, err = imp.readBatch(reader)
 		if err != nil {
 			break
+		}
+
+		if len(docs) == 0 {
+			break
+		}
+
+		err = imp.batchToSolr(docs)
+		if err != nil {
+			break
+		}
+	}
+	return err
+}
+
+func (imp Importer) readBatch(reader *bufio.Reader) ([]Document, error) {
+	docs := []Document{}
+	for {
+		line, err := reader.ReadString('\n')
+		if err == io.EOF {
+			return docs, nil
+		}
+		if err != nil {
+			return docs, err
 		}
 
 		var doc Document
 		err = json.Unmarshal([]byte(line), &doc)
 		if err != nil {
-			break
+			return []Document{}, err
 		}
-
 		docs = append(docs, doc)
 		if len(docs) == imp.batchSize {
-			err = imp.batchToSolr(docs)
-			if err != nil {
-				break
-			}
-			docs = []Document{}
+			return docs, nil
 		}
 	}
-
-	if err != io.EOF {
-		return err
-	}
-
-	if len(docs) == 0 {
-		return nil
-	}
-
-	// post to Solr the last batch of docs
-	err = imp.batchToSolr(docs)
-	return err
 }
 
 func (imp Importer) batchToSolr(batch []Document) error {
