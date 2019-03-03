@@ -5,6 +5,9 @@ import (
 	"io/ioutil"
 )
 
+type Import struct {
+	BatchSize int `json:"batchSize"`
+}
 type Settings struct {
 	ServerAddress string            `json:"serverAddress"`
 	SolrCoreUrl   string            `json:"solrCoreUrl"`
@@ -12,6 +15,7 @@ type Settings struct {
 	SolrFacets    map[string]string `json:"solrFacets"`
 	SearchFl      []string          `json:"searchFl"`
 	ViewOneFl     []string          `json:"viewOneFl"`
+	Import        Import            `json:"import"`
 }
 
 func LoadSettings(filename string) (Settings, error) {

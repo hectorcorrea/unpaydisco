@@ -1,6 +1,9 @@
 {
   "serverAddress": "localhost:9001",
   "solrCoreUrl": "http://localhost:8983/solr/unpaydisco",
+  "import" : {
+    "batchSize": 100000
+  },
   "solrOptions" : {
     "defType": "edismax",
     "qf": "id title_txt_en",

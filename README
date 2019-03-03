@@ -28,7 +28,7 @@ solr create -c unpaydisco
 # Import the sample data
 ./unpaydisco -settings settings.json -import ./data/first_100.json
 
-# To run the discovery interface (once running browse to http://localhost:9001)
+# To run the discovery interface (then browse to http://localhost:9001)
 ./unpaydisco -settings settings.json
 ```
 

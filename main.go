@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	var settingsFile = flag.String("settings", "", "Name of settings file to use")
+	var settingsFile = flag.String("settings", "", "Name of settings file to use (required)")
 	var importFile = flag.String("import", "", "File name to import")
 	flag.Parse()
 
@@ -27,37 +27,59 @@ func main() {
 	}
 
 	if *importFile != "" {
-		err := unpaywall.FileToSolr(settings.SolrCoreUrl, *importFile)
-		if err != nil {
-			fmt.Printf("Error importing JSON file %s to Solr: %s\r\n", *importFile, settings.SolrCoreUrl)
-			fmt.Printf("%s\r\n", err)
-		} else {
-			fmt.Printf("Imported JSON file %s to Solr: %s\r\n", *importFile, settings.SolrCoreUrl)
-			fmt.Printf("OK\r\n")
-		}
+		doImport(settings.SolrCoreUrl, *importFile, settings.Import.BatchSize)
 		return
 	}
 
 	discovery.StartWebServer(*settingsFile)
 }
 
-func displayHelp() {
-	text := `
-Must indicate a settings.json file with an structure like this:
+func doImport(solrCoreURL string, fileName string, batchSize int) {
+	importer := unpaywall.NewImporter(solrCoreURL, fileName, batchSize)
+	err := importer.Import()
+	if err != nil {
+		fmt.Printf("Error importing JSON file %s to Solr: %s\r\n", fileName, solrCoreURL)
+		fmt.Printf("%s\r\n", err)
+	} else {
+		fmt.Printf("Imported JSON file %s to Solr: %s\r\n", fileName, solrCoreURL)
+		fmt.Printf("OK\r\n")
+	}
+	return
+}
 
+func displayHelp() {
+	help := `
+A sample discovery layer on top of the data from Unpaywall.org
+
+unpaydisco -settings settings.json [-import unpaydata.json]
+
+	settings.json is a file with the settings to run the web server and connect to Solr
+
+	unpaydata.json is a file with data from Unpaywall to import into Solr`
+
+	fmt.Printf("%s\r\n\r\n", help)
+
+	sample := `
+The format of the settings.json is as follows:
+		
 	{
-	  "serverAddress": "localhost:9001",
-	  "solrCoreUrl": "http://localhost:8983/solr/bibdata",
-	  "solrOptions" : {
-	    "defType": "edismax",
-	    "qf": "authorsAll title^100"
-	  },
-	  "solrFacets": {
-	    "subjects_str": "Subjects",
-	    "publisher_str": "Publisher"
-	  },
-		"searchFl": ["id", "title", "subjects", "author"],
-	  "viewOneFl": ["id", "title", "authorsAll", "_version_"]
-	}`
-	fmt.Printf("%s\r\n\r\n", text)
+		"serverAddress": "localhost:9001",
+		"solrCoreUrl": "http://localhost:8983/solr/bibdata",
+		"solrOptions" : {
+			"defType": "edismax",
+			"qf": "authorsAll title^100",
+			"wt": "json",
+			"facet.limit": "20",
+			"facet.mincount": "1",
+			"hl": "on"
+		},
+		"solrFacets": {
+			"journal_s": "Journal",
+			"year_i": "Year"
+		},
+		"searchFl": ["id", "title_txt_en", "oa_url_s"],
+		"viewOneFl": []
+	}
+`
+	fmt.Printf("%s\r\n\r\n", sample)
 }
