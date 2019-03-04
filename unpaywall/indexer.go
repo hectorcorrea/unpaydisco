@@ -9,8 +9,8 @@ import (
 	"solr"
 )
 
-// Importer is used to handle imports of Unpaywall documents to Solr.
-type Importer struct {
+// Indexer is used to handle imports of Unpaywall documents to Solr.
+type Indexer struct {
 	fileName  string
 	batchSize int
 	file      *os.File
@@ -19,18 +19,18 @@ type Importer struct {
 	docsOA    int
 }
 
-// NewImporter creates a new importer with the required parameters
-func NewImporter(solrCoreURL string, fileName string, batchSize int) Importer {
-	importer := Importer{
+// NewIndexer creates a new indexer with the required parameters
+func NewIndexer(solrCoreURL string, fileName string, batchSize int) Indexer {
+	indexer := Indexer{
 		fileName:  fileName,
 		batchSize: batchSize,
 		solr:      solr.New(solrCoreURL, true),
 	}
-	return importer
+	return indexer
 }
 
 // Import is the core method that performs the import
-func (imp *Importer) Import() error {
+func (imp *Indexer) Import() error {
 	file, err := os.Open(imp.fileName)
 	defer file.Close()
 	if err != nil {
@@ -58,7 +58,7 @@ func (imp *Importer) Import() error {
 	return err
 }
 
-func (imp *Importer) readBatch(reader *bufio.Reader) ([]Document, error) {
+func (imp *Indexer) readBatch(reader *bufio.Reader) ([]Document, error) {
 	docs := []Document{}
 	for {
 		line, err := reader.ReadString('\n')
@@ -86,9 +86,14 @@ func (imp *Importer) readBatch(reader *bufio.Reader) ([]Document, error) {
 	}
 }
 
-func (imp *Importer) batchToSolr(batch []Document) error {
+func (imp *Indexer) batchToSolr(batch []Document) error {
 	var solrDocs []map[string]interface{}
 	for _, doc := range batch {
+		authors := []string{}
+		for _, author := range doc.Authors {
+			name := fmt.Sprintf("%s %s", author.Given, author.Family)
+			authors = append(authors, name)
+		}
 		solrDoc := map[string]interface{}{
 			"id":           doc.Doi,
 			"doi_url_s":    doc.DoiURL,
@@ -96,6 +101,7 @@ func (imp *Importer) batchToSolr(batch []Document) error {
 			"title_txt_en": doc.Title,
 			"journal_s":    doc.JournalName,
 			"oa_url_s":     doc.BestOaLocation.URL,
+			"authors_ss":   authors,
 		}
 		solrDocs = append(solrDocs, solrDoc)
 	}

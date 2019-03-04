@@ -77,9 +77,14 @@
       {{ range .Items }}
         <div class="list-group-item">
           <h2>{{ .Title | safeHTML }}</h2>
-          <p><b>Journal:</b> {{ .JournalName }}</p>
+          {{ if ne .JournalName "" }}
+            <p><b>Journal:</b> {{ .JournalName }}</p>
+          {{ end }}
           {{ if ne .Year 0 }}
             <p><b>Year:</b> {{ .Year }}</p>
+          {{ end }}
+          {{ if .HasAuthors }}
+            <p><b>Authors</b>: {{ .AuthorsString }}</p>
           {{ end }}
           <p><b>DOI:</b> <a href="{{ .DoiURL }}" target="_blank">{{ .Doi }}</a></p>
           <p><b>Open Access URL:</b> <a href="{{ .OaURL }}" target="_blank">{{ .OaURL }}</a></p>

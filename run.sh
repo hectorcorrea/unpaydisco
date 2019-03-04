@@ -1,1 +1,1 @@
-go build && ./solrdora settings.json
+go build && ./unpaydisco -settings settings.json 

@@ -7,6 +7,12 @@ type OaLocation struct {
 	URL string `json:"url"`
 }
 
+// Author represents the author information
+type Author struct {
+	Given  string `json:"given"`
+	Family string `json:"family"`
+}
+
 // Document represents an Unpaywall document
 type Document struct {
 	Doi            string     `json:"doi"`
@@ -15,6 +21,7 @@ type Document struct {
 	Title          string     `json:"title"`
 	JournalName    string     `json:"journal_name"`
 	BestOaLocation OaLocation `json:"best_oa_location"`
+	Authors        []Author   `json:"z_authors"`
 }
 
 func (d Document) String() string {

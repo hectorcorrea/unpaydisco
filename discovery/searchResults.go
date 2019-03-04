@@ -1,18 +1,23 @@
 package discovery
 
 import (
+	"strings"
+
 	"github.com/hectorcorrea/solr"
 	// "solr"
 )
 
 type SearchItem struct {
-	Doi         string
-	DoiURL      string
-	Title       string
-	Year        int
-	JournalName string
-	OaURL       string
-	SolrDoc     solr.Document
+	Doi           string
+	DoiURL        string
+	Title         string
+	Year          int
+	JournalName   string
+	OaURL         string
+	Authors       []string
+	SolrDoc       solr.Document
+	HasAuthors    bool
+	AuthorsString string
 }
 
 type SearchResults struct {
@@ -92,6 +97,15 @@ func solrDocToSearchItem(doc solr.Document) SearchItem {
 	if doc.Data["year_i"] != nil {
 		item.Year = int(doc.Data["year_i"].(float64))
 	}
+
+	if doc.Data["authors_ss"] != nil {
+		for _, author := range doc.Data["authors_ss"].([]interface{}) {
+			item.Authors = append(item.Authors, author.(string))
+		}
+		item.HasAuthors = len(item.Authors) > 0
+		item.AuthorsString = strings.Join(item.Authors, ", ")
+	}
+
 	return item
 }
 

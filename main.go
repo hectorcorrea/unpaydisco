@@ -35,8 +35,8 @@ func main() {
 }
 
 func doImport(solrCoreURL string, fileName string, batchSize int) {
-	importer := unpaywall.NewImporter(solrCoreURL, fileName, batchSize)
-	err := importer.Import()
+	indexer := unpaywall.NewIndexer(solrCoreURL, fileName, batchSize)
+	err := indexer.Import()
 	if err != nil {
 		fmt.Printf("Error importing JSON file %s to Solr: %s\r\n", fileName, solrCoreURL)
 		fmt.Printf("%s\r\n", err)
