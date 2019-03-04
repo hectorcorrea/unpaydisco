@@ -5,6 +5,16 @@ import (
 	// "solr"
 )
 
+type SearchItem struct {
+	Doi         string
+	DoiURL      string
+	Title       string
+	Year        int
+	JournalName string
+	OaURL       string
+	SolrDoc     solr.Document
+}
+
 type SearchResults struct {
 	Q           string
 	Documents   []solr.Document
@@ -19,6 +29,7 @@ type SearchResults struct {
 	NextPageUrl string
 	PrevPageUrl string
 	Response    solr.SearchResponse
+	Items       []SearchItem
 }
 
 func NewSearchResults(resp solr.SearchResponse, baseUrl string) SearchResults {
@@ -32,6 +43,7 @@ func NewSearchResults(resp solr.SearchResponse, baseUrl string) SearchResults {
 		NextPageUrl: baseUrl + resp.NextPageUrl,
 		Response:    resp,
 		Documents:   resp.Documents,
+		Items:       solrDocumentsToSearchItems(resp.Documents),
 	}
 
 	if results.NumFound > 0 {
@@ -41,6 +53,10 @@ func NewSearchResults(resp solr.SearchResponse, baseUrl string) SearchResults {
 			results.Last = results.NumFound
 		}
 	}
+
+	// TODO: Update the solr module to URL encode the values used in the facets
+	// otherwise the links are broken when they have some special characters
+	// (e.g. college & libraries)
 	results.Facets.SetAddRemoveUrls(results.Url)
 
 	if resp.Q != "*" {
@@ -49,4 +65,41 @@ func NewSearchResults(resp solr.SearchResponse, baseUrl string) SearchResults {
 	}
 
 	return results
+}
+
+func solrDocToSearchItem(doc solr.Document) SearchItem {
+	item := SearchItem{Doi: doc.Data["id"].(string)}
+
+	if doc.Data["title_txt_en"] != nil {
+		item.Title = doc.Data["title_txt_en"].(string)
+		if doc.IsHighlighted("title_txt_en") {
+			item.Title = doc.HighlightFor("title_txt_en")
+		}
+	}
+
+	if doc.Data["doi_url_s"] != nil {
+		item.DoiURL = doc.Data["doi_url_s"].(string)
+	}
+
+	if doc.Data["journal_s"] != nil {
+		item.JournalName = doc.Data["journal_s"].(string)
+	}
+
+	if doc.Data["oa_url_s"] != nil {
+		item.OaURL = doc.Data["oa_url_s"].(string)
+	}
+
+	if doc.Data["year_i"] != nil {
+		item.Year = int(doc.Data["year_i"].(float64))
+	}
+	return item
+}
+
+func solrDocumentsToSearchItems(docs []solr.Document) []SearchItem {
+	items := []SearchItem{}
+	for _, doc := range docs {
+		item := solrDocToSearchItem(doc)
+		items = append(items, item)
+	}
+	return items
 }

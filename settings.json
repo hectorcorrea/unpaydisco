@@ -17,6 +17,6 @@
     "journal_s": "Journal",
     "year_i": "Year"
   },
-  "searchFl": ["id", "title_txt_en", "journal_s", "oa_url_s"],
+  "searchFl": ["id", "doi_url_s", "title_txt_en", "journal_s", "year_i", "oa_url_s"],
   "viewOneFl": []
 }
