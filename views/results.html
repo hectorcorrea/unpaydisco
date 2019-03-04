@@ -88,10 +88,17 @@
           {{ end }}
           <p><b>DOI:</b> <a href="{{ .DoiURL }}" target="_blank">{{ .Doi }}</a></p>
           <p><b>Open Access URL:</b> <a href="{{ .OaURL }}" target="_blank">{{ .OaURL }}</a></p>
+          <p><b>JSON view (from Unpaywall.org)</b>: <a href="{{ .UnpayURL }}" target="_blank">{{ .UnpayURL }}</a></p>
         </div>
       {{ end }}
     </div>
 
+    <!-- TODO disable prev/next based on current page and num found -->
+    <div class="btn-group" role="group" aria-label="...">
+        <a class="btn btn-default" href="{{ .PrevPageUrl }}" title="View previous {{ .Rows }}">Previous</a>
+        <a class="btn btn-default" href="{{ .NextPageUrl }}" title="View next {{ .Rows }}">Next</a>
+      </div>
+      <div>&nbsp;</div>
   </div>
 </div>
 

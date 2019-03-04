@@ -1,6 +1,7 @@
 package discovery
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/hectorcorrea/solr"
@@ -18,6 +19,7 @@ type SearchItem struct {
 	SolrDoc       solr.Document
 	HasAuthors    bool
 	AuthorsString string
+	UnpayURL      string
 }
 
 type SearchResults struct {
@@ -74,6 +76,7 @@ func NewSearchResults(resp solr.SearchResponse, baseUrl string) SearchResults {
 
 func solrDocToSearchItem(doc solr.Document) SearchItem {
 	item := SearchItem{Doi: doc.Data["id"].(string)}
+	item.UnpayURL = fmt.Sprintf("https://api.unpaywall.org/v2/%s?email=unpaydisco", item.Doi)
 
 	if doc.Data["title_txt_en"] != nil {
 		item.Title = doc.Data["title_txt_en"].(string)
