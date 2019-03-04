@@ -34,7 +34,7 @@ solr create -c unpaydisco
 # Then browse to http://localhost:9001
 ```
 
-Once it's running it shold look more or less like [this screenshot](https://github.com/hectorcorrea/unpaydisco/blob/master/misc/search_results.png).
+Once it's running it should look more or less like [this screenshot](https://github.com/hectorcorrea/unpaydisco/blob/master/misc/search_results.png).
 
 
 ## Unpaywall data
