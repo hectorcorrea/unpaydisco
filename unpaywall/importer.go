@@ -3,6 +3,7 @@ package unpaywall
 import (
 	"bufio"
 	"encoding/json"
+	"fmt"
 	"io"
 	"os"
 	"solr"
@@ -13,7 +14,9 @@ type Importer struct {
 	fileName  string
 	batchSize int
 	file      *os.File
-	s         solr.Solr
+	solr      solr.Solr
+	docsRead  int
+	docsOA    int
 }
 
 // NewImporter creates a new importer with the required parameters
@@ -21,13 +24,13 @@ func NewImporter(solrCoreURL string, fileName string, batchSize int) Importer {
 	importer := Importer{
 		fileName:  fileName,
 		batchSize: batchSize,
-		s:         solr.New(solrCoreURL, true),
+		solr:      solr.New(solrCoreURL, true),
 	}
 	return importer
 }
 
 // Import is the core method that performs the import
-func (imp Importer) Import() error {
+func (imp *Importer) Import() error {
 	file, err := os.Open(imp.fileName)
 	defer file.Close()
 	if err != nil {
@@ -50,11 +53,12 @@ func (imp Importer) Import() error {
 		if err != nil {
 			break
 		}
+		fmt.Printf("Documents read: %d, Open access: %d\r\n", imp.docsRead, imp.docsOA)
 	}
 	return err
 }
 
-func (imp Importer) readBatch(reader *bufio.Reader) ([]Document, error) {
+func (imp *Importer) readBatch(reader *bufio.Reader) ([]Document, error) {
 	docs := []Document{}
 	for {
 		line, err := reader.ReadString('\n')
@@ -70,14 +74,19 @@ func (imp Importer) readBatch(reader *bufio.Reader) ([]Document, error) {
 		if err != nil {
 			return []Document{}, err
 		}
-		docs = append(docs, doc)
-		if len(docs) == imp.batchSize {
-			return docs, nil
+
+		imp.docsRead++
+		if doc.BestOaLocation.URL != "" {
+			imp.docsOA++
+			docs = append(docs, doc)
+			if len(docs) == imp.batchSize {
+				return docs, nil
+			}
 		}
 	}
 }
 
-func (imp Importer) batchToSolr(batch []Document) error {
+func (imp *Importer) batchToSolr(batch []Document) error {
 	var solrDocs []map[string]interface{}
 	for _, doc := range batch {
 		solrDoc := map[string]interface{}{
@@ -90,6 +99,5 @@ func (imp Importer) batchToSolr(batch []Document) error {
 		}
 		solrDocs = append(solrDocs, solrDoc)
 	}
-
-	return imp.s.Post(solrDocs)
+	return imp.solr.Post(solrDocs)
 }
