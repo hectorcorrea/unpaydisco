@@ -25,7 +25,7 @@ func (search Search) Get(id string) (solr.Document, error) {
 	return doc, nil
 }
 
-func (search Search) Search(qs url.Values, baseUrl string) (SearchResults, error) {
+func (search Search) Search(qs url.Values) (SearchResults, error) {
 	params := solr.NewSearchParamsFromQs(qs, search.settings.SolrOptions, search.settings.SolrFacets)
 	params.Fl = search.settings.SearchFl
 	solr := solr.New(search.settings.SolrCoreUrl, true)
@@ -33,6 +33,8 @@ func (search Search) Search(qs url.Values, baseUrl string) (SearchResults, error
 	if err != nil {
 		return SearchResults{}, err
 	}
-	results := NewSearchResults(resp, baseUrl)
+	rootURL := search.settings.Discovery.RootURL
+	searchURL := rootURL + "/search"
+	results := NewSearchResults(resp, searchURL)
 	return results, nil
 }

@@ -5,9 +5,14 @@ import (
 	"io/ioutil"
 )
 
+type Discovery struct {
+	RootURL string `json:"rootUrl"`
+}
+
 type Import struct {
 	BatchSize int `json:"batchSize"`
 }
+
 type Settings struct {
 	ServerAddress string            `json:"serverAddress"`
 	SolrCoreUrl   string            `json:"solrCoreUrl"`
@@ -16,6 +21,7 @@ type Settings struct {
 	SearchFl      []string          `json:"searchFl"`
 	ViewOneFl     []string          `json:"viewOneFl"`
 	Import        Import            `json:"import"`
+	Discovery     Discovery         `json:"discovery"`
 }
 
 func LoadSettings(filename string) (Settings, error) {

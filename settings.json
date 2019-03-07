@@ -1,6 +1,9 @@
 {
   "serverAddress": "localhost:9001",
   "solrCoreUrl": "http://localhost:8983/solr/unpaydisco",
+  "discovery": {
+    "rootUrl": "/"
+  },
   "import" : {
     "batchSize": 100000
   },

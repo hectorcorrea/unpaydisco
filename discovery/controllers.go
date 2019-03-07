@@ -11,12 +11,12 @@ func about(values RouteValues, resp http.ResponseWriter, req *http.Request) {
 
 func home(values RouteValues, resp http.ResponseWriter, req *http.Request) {
 	s := NewSession(values, resp, req)
-	renderTemplate(s, "views/index.html", nil)
+	renderTemplate(s, "views/index.html", settings)
 }
 
 func search(values RouteValues, resp http.ResponseWriter, req *http.Request) {
 	search := NewSearch(settings)
-	results, err := search.Search(req.URL.Query(), "/search?")
+	results, err := search.Search(req.URL.Query())
 
 	s := NewSession(values, resp, req)
 	if err != nil {

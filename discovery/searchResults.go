@@ -31,6 +31,7 @@ type SearchResults struct {
 	Rows        int
 	First       int
 	Last        int
+	BaseUrl     string
 	Url         string
 	UrlNoQ      string
 	NextPageUrl string
@@ -45,9 +46,10 @@ func NewSearchResults(resp solr.SearchResponse, baseUrl string) SearchResults {
 		Facets:      resp.Facets,
 		Start:       resp.Start,
 		Rows:        resp.Rows,
-		Url:         baseUrl + resp.Url,
-		PrevPageUrl: baseUrl + resp.PrevPageUrl,
-		NextPageUrl: baseUrl + resp.NextPageUrl,
+		BaseUrl:     baseUrl,
+		Url:         baseUrl + "?" + resp.Url,
+		PrevPageUrl: baseUrl + "?" + resp.PrevPageUrl,
+		NextPageUrl: baseUrl + "?" + resp.NextPageUrl,
 		Response:    resp,
 		Documents:   resp.Documents,
 		Items:       solrDocumentsToSearchItems(resp.Documents),

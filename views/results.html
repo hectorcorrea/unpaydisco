@@ -6,7 +6,7 @@
 </style>
 <div class="row">
   <div class="col-md-4">
-    <form action="/search" method="GET">
+    <form action="{{ .BaseUrl }}" method="GET">
       <input type="text" id="q" name="q" value="{{ .Q }}" placeholder="enter text" autofocus/>
       <div style="display:none;" id="facets_form">
         <!-- reset paging when submitting a new search -->
