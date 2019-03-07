@@ -70,7 +70,7 @@ func NewSearchResults(resp solr.SearchResponse, baseUrl string) SearchResults {
 
 	if resp.Q != "*" {
 		results.Q = resp.Q
-		results.UrlNoQ = baseUrl + resp.UrlNoQ
+		results.UrlNoQ = baseUrl + "?" + resp.UrlNoQ
 	}
 
 	return results
