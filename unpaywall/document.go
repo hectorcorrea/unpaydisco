@@ -22,6 +22,8 @@ type Document struct {
 	JournalName    string     `json:"journal_name"`
 	BestOaLocation OaLocation `json:"best_oa_location"`
 	Authors        []Author   `json:"z_authors"`
+	Genre          string     `json:"genre"`
+	Publisher      string     `json:"publisher"`
 }
 
 func (d Document) String() string {

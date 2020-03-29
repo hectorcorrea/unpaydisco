@@ -80,8 +80,15 @@
           {{ if ne .JournalName "" }}
             <p><b>Journal:</b> {{ .JournalName }}</p>
           {{ end }}
+          {{ if ne .PublisherName "" }}
+            <p><b>Publisher:</b> {{ .PublisherName }}</p>
+          {{ end }}
           {{ if ne .Year 0 }}
-            <p><b>Year:</b> {{ .Year }}</p>
+            <p><b>Year:</b> {{ .Year }}
+            {{ if ne .Genre "" }}
+              ({{ .Genre }})
+            {{ end }}
+            </p>
           {{ end }}
           {{ if .HasAuthors }}
             <p><b>Authors</b>: {{ .AuthorsString }}</p>

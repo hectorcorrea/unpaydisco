@@ -5,6 +5,7 @@ import (
 	"unpaydisco/common"
 
 	"github.com/hectorcorrea/solr"
+	// "solr"
 )
 
 type Search struct {

@@ -22,8 +22,23 @@ cd unpaydisco
 go get
 go build
 
-# Create the Solr core
+# Create the Solr core, add a catch all field (all_text) for searching,
+# and configure the copy-field directives to populate it.
 solr create -c unpaydisco
+
+curl -X POST -H 'Content-type:application/json' --data-binary '{
+  "add-field":{
+    "name":"all_text",
+    "type":"text_en",
+    "multiValued":true
+  }
+}' http://localhost:8983/solr/unpaydisco/schema
+
+curl -X POST -H 'Content-type:application/json' --data-binary '{
+  "add-copy-field":{ "source":"*_s", "dest":[ "all_text" ]},
+  "add-copy-field":{ "source":"*_ss", "dest":[ "all_text" ]},
+  "add-copy-field":{ "source":"*_txt_en", "dest":[ "all_text" ]}
+}' http://localhost:8983/solr/unpaydisco/schema
 
 # Import the sample data
 ./unpaydisco -settings settings.json -import ./data/first_100.json

@@ -9,7 +9,7 @@
   },
   "solrOptions" : {
     "defType": "edismax",
-    "qf": "id title_txt_en",
+    "qf": "id title_txt_en^10 all_text",
     "op": "AND",
     "wt": "json",
     "facet.limit": "20",
@@ -17,9 +17,11 @@
     "hl": "on"
   },
   "solrFacets": {
-    "journal_s": "Journal",
-    "year_i": "Year"
+    "year_i": "1|Year",
+    "journal_s": "2|Journal",
+    "publisher_s": "3|Publisher",
+    "genre_s": "4|Genre"
   },
-  "searchFl": ["id", "doi_url_s", "title_txt_en", "journal_s", "year_i", "oa_url_s", "authors_ss"],
+  "searchFl": ["id", "doi_url_s", "title_txt_en", "journal_s", "year_i", "oa_url_s", "authors_ss", "publisher_s", "genre_s"],
   "viewOneFl": []
 }

@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"solr"
+
+	"github.com/hectorcorrea/solr"
+	// "solr"
 )
 
 // Indexer is used to handle imports of Unpaywall documents to Solr.
@@ -102,6 +104,8 @@ func (imp *Indexer) batchToSolr(batch []Document) error {
 			"journal_s":    doc.JournalName,
 			"oa_url_s":     doc.BestOaLocation.URL,
 			"authors_ss":   authors,
+			"genre_s":      doc.Genre,
+			"publisher_s":  doc.Publisher,
 		}
 		solrDocs = append(solrDocs, solrDoc)
 	}
