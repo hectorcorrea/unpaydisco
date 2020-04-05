@@ -65,9 +65,6 @@ func NewSearchResults(resp solr.SearchResponse, baseUrl string) SearchResults {
 		}
 	}
 
-	// TODO: Update the solr module to URL encode the values used in the facets
-	// otherwise the links are broken when they have some special characters
-	// (e.g. college & libraries)
 	results.Facets.SetAddRemoveUrls(results.Url)
 
 	if resp.Q != "*" {
