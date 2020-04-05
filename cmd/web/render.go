@@ -1,4 +1,4 @@
-package discovery
+package main
 
 import (
 	"fmt"
@@ -19,7 +19,7 @@ func baseTemplate() *template.Template {
 
 func renderNotFound(s Session) {
 	log.Printf(fmt.Sprintf("Not found (%s)", s.Req.URL.Path))
-	t, err := baseTemplate().ParseFiles("views/layout.html", "views/notfound.html")
+	t, err := baseTemplate().ParseFiles("ui/html/layout.html", "ui/html/notfound.html")
 	if err != nil {
 		log.Printf("Error rendering not found page :(")
 		// perhaps render a hard coded string?
@@ -31,7 +31,7 @@ func renderNotFound(s Session) {
 
 func renderError(s Session, title string, err error) {
 	log.Printf("ERROR: %s - %s (%s)", title, err, s.Req.URL.Path)
-	t, err := baseTemplate().ParseFiles("views/layout.html", "views/error.html")
+	t, err := baseTemplate().ParseFiles("ui/html/layout.html", "ui/html/error.html")
 	if err != nil {
 		log.Printf("Error rendering error page :(")
 		// perhaps render a hard coded string?
@@ -42,7 +42,7 @@ func renderError(s Session, title string, err error) {
 }
 
 func loadTemplate(s Session, viewName string) (*template.Template, error) {
-	t, err := baseTemplate().ParseFiles("views/layout.html", viewName)
+	t, err := baseTemplate().ParseFiles("ui/html/layout.html", viewName)
 	if err != nil {
 		renderError(s, fmt.Sprintf("Loading view %s", viewName), err)
 		return nil, err

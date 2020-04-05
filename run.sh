@@ -1,1 +1,1 @@
-go build && ./unpaydisco -settings settings.json 
+go build -o unpaydisco ./cmd/web/. && ./unpaydisco -settings settings.json

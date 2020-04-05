@@ -1,9 +1,10 @@
-package discovery
+package main
 
 import (
 	"log"
 	"net/http"
-	"unpaydisco/common"
+
+	"hectorcorrea.com/unpaydisco/pkg/common"
 )
 
 var router Router
@@ -26,7 +27,7 @@ func StartWebServer(settingsFile string) {
 	log.Printf("Loaded settings from: %s", settingsFile)
 	log.Printf("Listening for requests at http://%s", settings.ServerAddress)
 
-	fs := http.FileServer(http.Dir("./public"))
+	fs := http.FileServer(http.Dir("ui/public/"))
 	http.Handle("/favicon.ico", fs)
 	http.Handle("/robots.txt", fs)
 	http.Handle("/public/", http.StripPrefix("/public/", fs))

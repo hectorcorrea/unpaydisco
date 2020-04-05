@@ -1,11 +1,11 @@
 package main
 
 import (
+	"hectorcorrea.com/unpaydisco/pkg/unpaywall"
 	"flag"
 	"fmt"
-	"unpaydisco/common"
-	"unpaydisco/discovery"
-	"unpaydisco/unpaywall"
+
+	"hectorcorrea.com/unpaydisco/pkg/common"
 )
 
 func main() {
@@ -31,7 +31,7 @@ func main() {
 		return
 	}
 
-	discovery.StartWebServer(*settingsFile)
+	StartWebServer(*settingsFile)
 }
 
 func doImport(solrCoreURL string, fileName string, batchSize int) {
@@ -61,7 +61,7 @@ unpaydisco -settings settings.json [-import unpaydata.json]
 
 	sample := `
 The format of the settings.json is as follows:
-		
+
 	{
 		"serverAddress": "localhost:9001",
 		"solrCoreUrl": "http://localhost:8983/solr/bibdata",

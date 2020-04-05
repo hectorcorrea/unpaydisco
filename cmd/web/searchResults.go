@@ -1,4 +1,4 @@
-package discovery
+package main
 
 import (
 	"fmt"
@@ -14,6 +14,8 @@ type SearchItem struct {
 	Title         string
 	Year          int
 	JournalName   string
+	PublisherName string
+	Genre         string
 	OaURL         string
 	Authors       []string
 	SolrDoc       solr.Document
@@ -111,6 +113,13 @@ func solrDocToSearchItem(doc solr.Document) SearchItem {
 		item.AuthorsString = strings.Join(item.Authors, ", ")
 	}
 
+	if doc.Data["genre_s"] != nil {
+		item.Genre = doc.Data["genre_s"].(string)
+	}
+
+	if doc.Data["publisher_s"] != nil {
+		item.PublisherName = doc.Data["publisher_s"].(string)
+	}
 	return item
 }
 

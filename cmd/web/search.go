@@ -1,8 +1,9 @@
-package discovery
+package main
 
 import (
 	"net/url"
-	"unpaydisco/common"
+
+	"hectorcorrea.com/unpaydisco/pkg/common"
 
 	"github.com/hectorcorrea/solr"
 )

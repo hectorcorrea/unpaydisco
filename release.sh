@@ -1,6 +1,6 @@
 echo "Creating Linux version..."
 GOOS=linux go build
-zip -r unpaydisco_linux.zip unpaydisco settings.json public/* views/* data/*
+zip unpaydisco_linux.zip unpaydisco
 
 # echo "Creating Windows version..."
 # GOOS=windows GOARCH=386 go build -o solrdora.exe

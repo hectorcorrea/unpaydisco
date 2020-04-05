@@ -1,4 +1,4 @@
-package discovery
+package main
 
 import (
 	"net/http"
@@ -6,12 +6,12 @@ import (
 
 func about(values RouteValues, resp http.ResponseWriter, req *http.Request) {
 	s := NewSession(values, resp, req)
-	renderTemplate(s, "views/about.html", settings)
+	renderTemplate(s, "ui/html/about.html", settings)
 }
 
 func home(values RouteValues, resp http.ResponseWriter, req *http.Request) {
 	s := NewSession(values, resp, req)
-	renderTemplate(s, "views/index.html", settings)
+	renderTemplate(s, "ui/html/index.html", settings)
 }
 
 func search(values RouteValues, resp http.ResponseWriter, req *http.Request) {
@@ -22,7 +22,7 @@ func search(values RouteValues, resp http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		renderError(s, "Error during search", err)
 	} else {
-		renderTemplate(s, "views/results.html", results)
+		renderTemplate(s, "ui/html/results.html", results)
 	}
 }
 
@@ -34,6 +34,6 @@ func viewOne(values RouteValues, resp http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		renderError(s, "Error retrieving document from Solr", err)
 	} else {
-		renderTemplate(s, "views/one.html", record)
+		renderTemplate(s, "ui/html/one.html", record)
 	}
 }
