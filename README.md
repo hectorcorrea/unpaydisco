@@ -21,9 +21,14 @@ git clone https://github.com/hectorcorrea/unpaydisco.git
 cd unpaydisco
 go get
 go build -o unpaydisco ./cmd/web/.
+```
 
-# Create the Solr core, add a catch all field (all_text) for searching,
-# and configure the copy-field directives to populate it.
+
+## Solr core
+To create the Solr core, add a catch all field (all_text) for searching,
+and configure the copy-field directives to populate it issue the following commands:
+
+```
 solr create -c unpaydisco
 
 curl -X POST -H 'Content-type:application/json' --data-binary '{
@@ -39,17 +44,23 @@ curl -X POST -H 'Content-type:application/json' --data-binary '{
   "add-copy-field":{ "source":"*_ss", "dest":[ "all_text" ]},
   "add-copy-field":{ "source":"*_txt_en", "dest":[ "all_text" ]}
 }' http://localhost:8983/solr/unpaydisco/schema
-
-# Import the sample data
-./unpaydisco -settings settings.json -import ./data/first_100.json
-
-# Run the discovery interface
-./unpaydisco -settings settings.json
-
-# Then browse to http://localhost:9001
 ```
 
-Once it's running it should look more or less like [this screenshot](https://github.com/hectorcorrea/unpaydisco/blob/master/misc/search_results.png).
+
+# Running it
+To import the sample data
+
+```
+./unpaydisco -settings settings.json -import ./data/first_100.json
+```
+
+To run the discovery interface
+
+```
+./unpaydisco -settings settings.json
+```
+
+and then then browse to http://localhost:9001. Once it's running it should look more or less like [this screenshot](https://github.com/hectorcorrea/unpaydisco/blob/master/misc/search_results.png).
 
 
 ## Unpaywall data

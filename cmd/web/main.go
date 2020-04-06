@@ -1,9 +1,10 @@
 package main
 
 import (
-	"hectorcorrea.com/unpaydisco/pkg/unpaywall"
 	"flag"
 	"fmt"
+
+	"hectorcorrea.com/unpaydisco/pkg/unpaywall"
 
 	"hectorcorrea.com/unpaydisco/pkg/common"
 )
@@ -11,6 +12,8 @@ import (
 func main() {
 	var settingsFile = flag.String("settings", "", "Name of settings file to use (required)")
 	var importFile = flag.String("import", "", "File name to import")
+	var extractFile = flag.String("extract", "", "File to extract open access documents from (- to use stdin)")
+
 	flag.Parse()
 
 	if *settingsFile == "" {
@@ -31,7 +34,22 @@ func main() {
 		return
 	}
 
+	if *extractFile != "" {
+		doExtract(*extractFile)
+		return
+	}
+
 	StartWebServer(*settingsFile)
+}
+
+func doExtract(fileName string) {
+	extractor := unpaywall.NewExtractor(fileName)
+	err := extractor.Extract()
+	if err != nil {
+		fmt.Printf("Error processing JSONL file %s\r\n", fileName)
+		fmt.Printf("%s\r\n", err)
+	}
+	return
 }
 
 func doImport(solrCoreURL string, fileName string, batchSize int) {
