@@ -19,7 +19,6 @@ The default `settings.json` file assumes that you are running Solr on the defaul
 # Get the code
 git clone https://github.com/hectorcorrea/unpaydisco.git
 cd unpaydisco
-go get
 go build -o unpaydisco ./cmd/web/.
 ```
 

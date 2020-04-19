@@ -1,9 +1,20 @@
 {{ define "content" }}
+<style>
+  .search-box {
+    border-width: 3px;
+    border-color: #d9edf7;
+    border-style: solid;
+    margin-bottom: 10px;
+    font-size: 20px;
+    width: 80%;
+  }
+</style>
+
 <div class="row">
   <h1>Welcome to UnpayDisco</h1>
   <div>Enter text to search for</div>
   <form action="{{ .Discovery.RootURL }}/search" method="GET">
-    <input type="text" id="q" name="q" value="" placeholder="enter text" autofocus/>
+    <input class="search-box" type="text" id="q" name="q" value="" placeholder="enter text" autofocus/>
     <button type="submit">Search</button>
   </form>
 </div>

@@ -3,11 +3,39 @@
   em {
     background: #e9e91966;
   }
+
+  .search-box {
+    border-width: 3px;
+    border-color: #d9edf7;
+    border-style: solid;
+    margin-bottom: 10px;
+    font-size: 20px;
+    width: 80%;
+  }
+
+  .search-button {
+    font-size: 20px;
+    margin-top: -6px;
+  }
+
+  .facet-filter {
+    border-style: solid;
+    border-color: #89ccf4;
+    border-width: 1px;
+    background-color: #d9edf7;
+    padding: 5px
+  }
+
+  .pagination-toolbar {
+    display: block;
+    height: 40px;
+  }
 </style>
 <div class="row">
-  <div class="col-md-4">
+  <div class="col-md-12">
     <form action="{{ .BaseUrl }}" method="GET">
-      <input type="text" id="q" name="q" value="{{ .Q }}" placeholder="enter text" autofocus/>
+      <input type="text" id="q" name="q" class="search-box" value="{{ .Q }}" placeholder="enter text" autofocus/>
+      <button type="submit" class="btn btn-info search-button">Search</button>
       <div style="display:none;" id="facets_form">
         <!-- reset paging when submitting a new search -->
         <input type="text" id="start" name="start" value="0" />
@@ -21,21 +49,22 @@
           {{ end }}
         {{ end }}
       </div>
-      <button type="submit">Search</button>
     </form>
   </div>
-  <div class="col-md-8">
+</div>
+
+<div class="row">
+  <div class="col-md-12" style="margin-bottom: 20px;">
     {{ if ne .Q "" }}
-      <p>Searched for:<b> {{ .Q }}</b><a href="{{ safeURL .UrlNoQ }}"> (remove)</a></p>
+      <span class="facet-filter">Text:<b> {{ .Q }}</b><a href="{{ safeURL .UrlNoQ }}"> (remove)</a></span>
     {{ end }}
     {{ range $facet := .Facets }}
       {{ range .Values }}
         {{ if .Active }}
-          <p>{{ $facet.Title }} > {{ .Text }} <a href="{{ safeURL .RemoveUrl }}">(remove)</a></p>
+          <span class="facet-filter">{{ $facet.Title }}: {{ .Text }} <a href="{{ safeURL .RemoveUrl }}">(remove)</a></span>
         {{ end }}
       {{ end }}
     {{ end }}
-    <p>Found: {{ .NumFound }}, showing {{ .First }} - {{ .Last }}</p>
   </div>
 </div>
 
@@ -66,11 +95,17 @@
 
   <div class="col-md-8">
     <!-- TODO disable prev/next based on current page and num found -->
-    <div class="btn-group" role="group" aria-label="...">
-      <a class="btn btn-default" href="{{ .PrevPageUrl }}" title="View previous {{ .Rows }}">Previous</a>
-      <a class="btn btn-default" href="{{ .NextPageUrl }}" title="View next {{ .Rows }}">Next</a>
+    <div class="pagination-toolbar">
+      <span>Found: <b>{{ .NumFound }}</b>, showing {{ .First }} - {{ .Last }}</span>
+      <div class="btn-group" style="float: right;"  role="group" aria-label="...">
+        <a class="btn btn-default" href="{{ .PrevPageUrl }}" title="View previous {{ .Rows }}">
+          <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="btn btn-default" href="{{ .NextPageUrl }}" title="View next {{ .Rows }}">
+          <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+      </div>
     </div>
-    <div>&nbsp;</div>
 
     <!-- search results -->
     <div class="list-group">
@@ -101,12 +136,16 @@
     </div>
 
     <!-- TODO disable prev/next based on current page and num found -->
-    <div class="btn-group" role="group" aria-label="...">
-        <a class="btn btn-default" href="{{ .PrevPageUrl }}" title="View previous {{ .Rows }}">Previous</a>
-        <a class="btn btn-default" href="{{ .NextPageUrl }}" title="View next {{ .Rows }}">Next</a>
+    <div class="pagination-toolbar">
+      <div class="btn-group" style="float: right;" role="group" aria-label="...">
+        <a class="btn btn-default" href="{{ .PrevPageUrl }}" title="View previous {{ .Rows }}">
+          <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="btn btn-default" href="{{ .NextPageUrl }}" title="View next {{ .Rows }}">
+          <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
       </div>
-      <div>&nbsp;</div>
-  </div>
+    </div>
 </div>
 
 {{ end }}
